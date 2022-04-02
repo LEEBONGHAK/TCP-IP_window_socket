@@ -17,7 +17,7 @@ void err_quit(const char* msg)
         NULL, WSAGetLastError(),
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
         (LPTSTR)&lpMsgBuf, 0, NULL);
-    MessageBox(NULL, (LPCTSTR)lpMsgBuf, (LPCWSTR) msg, MB_ICONERROR);
+    MessageBox(NULL, (LPCTSTR)lpMsgBuf, msg, MB_ICONERROR);
     LocalFree(lpMsgBuf);
     exit(1);
 }
@@ -154,7 +154,7 @@ DWORD WINAPI TCPServer6(LPVOID arg)
         // 접속한 클라이언트 정보 출력
         char ipaddr[50];
         DWORD ipaddrlen = sizeof(ipaddr);
-        WSAAddressToString((SOCKADDR*)&clientaddr, sizeof(clientaddr), NULL, (LPWSTR) ipaddr, &ipaddrlen);
+        WSAAddressToString((SOCKADDR*)&clientaddr, sizeof(clientaddr), NULL, ipaddr, &ipaddrlen);
         printf("\n[TCP 서버] 클라이언트 접속: %s\n", ipaddr);
 
         // 클라이언트와 데이터 통신
