@@ -9,7 +9,7 @@
 #define BUFSIZE 512
 
 // 소켓 함수 오류 출력 후 종료
-void err_quit(char *msg)
+void err_quit(const char* msg)
 {
     LPVOID lpMsgBuf;
     FormatMessage(
@@ -17,13 +17,13 @@ void err_quit(char *msg)
         NULL, WSAGetLastError(),
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
         (LPTSTR)&lpMsgBuf, 0, NULL);
-    MessageBox(NULL, (LPCTSTR)lpMsgBuf, msg, MB_ICONERROR);
+    MessageBox(NULL, (LPCTSTR)lpMsgBuf, (LPCWSTR) msg, MB_ICONERROR);
     LocalFree(lpMsgBuf);
     exit(1);
 }
 
 // 소켓 함수 오류 출력
-void err_display(char *msg)
+void err_display(const char* msg)
 {
     LPVOID lpMsgBuf;
     FormatMessage(
@@ -31,7 +31,7 @@ void err_display(char *msg)
         NULL, WSAGetLastError(),
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
         (LPTSTR)&lpMsgBuf, 0, NULL);
-    printf("[%s] %s", msg, (char *)lpMsgBuf);
+    printf("[%s] %s", msg, (char*)lpMsgBuf);
     LocalFree(lpMsgBuf);
 }
 
@@ -51,7 +51,7 @@ DWORD WINAPI TCPServer4(LPVOID arg)
     serveraddr.sin_family = AF_INET;
     serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serveraddr.sin_port = htons(SERVERPORT);
-    retval = bind(listen_sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
+    retval = bind(listen_sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
     if (retval == SOCKET_ERROR)
         err_quit("bind()");
 
@@ -70,7 +70,7 @@ DWORD WINAPI TCPServer4(LPVOID arg)
     {
         // accept()
         addrlen = sizeof(clientaddr);
-        client_sock = accept(listen_sock, (SOCKADDR *)&clientaddr, &addrlen);
+        client_sock = accept(listen_sock, (SOCKADDR*)&clientaddr, &addrlen);
         if (client_sock == INVALID_SOCKET)
         {
             err_display("accept()");
@@ -125,7 +125,7 @@ DWORD WINAPI TCPServer6(LPVOID arg)
     serveraddr.sin6_family = AF_INET6;
     serveraddr.sin6_addr = in6addr_any;
     serveraddr.sin6_port = htons(SERVERPORT);
-    retval = bind(listen_sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
+    retval = bind(listen_sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
     if (retval == SOCKET_ERROR)
         err_quit("bind()");
 
@@ -144,7 +144,7 @@ DWORD WINAPI TCPServer6(LPVOID arg)
     {
         // accept()
         addrlen = sizeof(clientaddr);
-        client_sock = accept(listen_sock, (SOCKADDR *)&clientaddr, &addrlen);
+        client_sock = accept(listen_sock, (SOCKADDR*)&clientaddr, &addrlen);
         if (client_sock == INVALID_SOCKET)
         {
             err_display("accept()");
@@ -154,7 +154,7 @@ DWORD WINAPI TCPServer6(LPVOID arg)
         // 접속한 클라이언트 정보 출력
         char ipaddr[50];
         DWORD ipaddrlen = sizeof(ipaddr);
-        WSAAddressToString((SOCKADDR *)&clientaddr, sizeof(clientaddr), NULL, ipaddr, &ipaddrlen);
+        WSAAddressToString((SOCKADDR*)&clientaddr, sizeof(clientaddr), NULL, (LPWSTR) ipaddr, &ipaddrlen);
         printf("\n[TCP 서버] 클라이언트 접속: %s\n", ipaddr);
 
         // 클라이언트와 데이터 통신
@@ -186,7 +186,7 @@ DWORD WINAPI TCPServer6(LPVOID arg)
     return 0;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     // 윈속 초기화
     WSADATA wsa;
