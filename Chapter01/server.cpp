@@ -78,8 +78,7 @@ DWORD WINAPI TCPServer4(LPVOID arg)
         }
 
         // 접속한 클라이언트 정보 출력
-        printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
-               inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+        printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 
         // 클라이언트와 데이터 통신
         while (1)
@@ -101,8 +100,7 @@ DWORD WINAPI TCPServer4(LPVOID arg)
 
         // closesocket()
         closesocket(client_sock);
-        printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-               inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+        printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
     }
 
     // closesocket()
@@ -156,8 +154,7 @@ DWORD WINAPI TCPServer6(LPVOID arg)
         // 접속한 클라이언트 정보 출력
         char ipaddr[50];
         DWORD ipaddrlen = sizeof(ipaddr);
-        WSAAddressToString((SOCKADDR *)&clientaddr, sizeof(clientaddr),
-                           NULL, ipaddr, &ipaddrlen);
+        WSAAddressToString((SOCKADDR *)&clientaddr, sizeof(clientaddr), NULL, ipaddr, &ipaddrlen);
         printf("\n[TCP 서버] 클라이언트 접속: %s\n", ipaddr);
 
         // 클라이언트와 데이터 통신
