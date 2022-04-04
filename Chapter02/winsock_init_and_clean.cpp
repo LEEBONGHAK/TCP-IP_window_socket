@@ -1,7 +1,7 @@
 #pragma comment(lib, "ws2_32")
 #include <winsock2.h>
 
-int main()
+int main(int argc, char *argv[])
 {
 	// 윈속 초기화
 	WSADATA wsa;
