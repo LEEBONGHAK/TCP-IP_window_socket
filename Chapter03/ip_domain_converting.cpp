@@ -12,7 +12,7 @@ void err_display(char *msg)
 		NULL, WSAGetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPTSTR) &lpMsgBuf, 0, NULL);
-	printf("[%s] %s\n", msg, lpMsgBuf);
+	printf("[%s] %s\n", msg, (char *) lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }
 
