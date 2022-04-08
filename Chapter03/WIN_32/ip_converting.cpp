@@ -20,10 +20,9 @@ int main(int argc, char *argv[])
 
 	// inet_ntoa() 함수 연습
 	IN_ADDR ipv4num;
-	ipv4test.s_addr = inet_addr(ipv4test);
+	ipv4num.s_addr = inet_addr(ipv4test);
 	printf("IPv4 주소(다시 변환 후) = %s\n", inet_ntoa(ipv4num));
 	printf("\n");
-
 
 	/* IPv6 변환 연습 */
 
@@ -33,8 +32,8 @@ int main(int argc, char *argv[])
 
 	// WSAStringToAddress() 함수 언습
 	SOCKADDR_IN6 ipv6num;
-	int addrlen = sizeof(ipv6test);
-	WSAStringToAddress(ipv6test, AF_INET6, NULL, (SOCKADDR *) &ipv6num, &addrlen);
+	int addrlen = sizeof(ipv6num);
+	WSAStringToAddress(ipv6test, AF_INET6, NULL, (SOCKADDR *)&ipv6num, &addrlen);
 	printf("IPv6 주소(변환 후) = 0x");
 	for (int i = 0; i < 16; i++)
 		printf("%02x", ipv6num.sin6_addr.u.Byte[i]);
@@ -43,7 +42,7 @@ int main(int argc, char *argv[])
 	// WSAAddressToString() 함수 연습
 	char ipaddr[50];
 	DWORD ipaddrlen = sizeof(ipaddr);
-	WSAAddressToString((SOCKADDR *) &ipv6num, sizeof(ipv6num), NULL, &ipaddr, &ipaddrlen);
+	WSAAddressToString((SOCKADDR *)&ipv6num, sizeof(ipv6num), NULL, ipaddr, &ipaddrlen);
 	printf("IPv6 주소(다시 변환 후) = %s\n", ipaddr);
 
 	WSACleanup();
