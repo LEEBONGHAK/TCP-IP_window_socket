@@ -1,4 +1,5 @@
 #pragma comment(lib, "ws2_32")
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <stdlib.h>
@@ -8,34 +9,35 @@
 #define BUFSIZE		512
 
 // 소켓 함수 오류 출력 후 종료
-void err_quit(char *msg)
+void err_quit(const char* msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL, WSAGetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR) &lpMsgBuf, 0, NULL
+		(LPTSTR)&lpMsgBuf, 0, NULL
 	);
-	MessgeBox(NULL, (LPCTSTR) lpMsgBuf, msg, MB_ICONERROR);
+	MessageBox(NULL, (LPCTSTR)lpMsgBuf, msg, MB_ICONERROR);
 	LocalFree(lpMsgBuf);
 	exit(1);
 }
 
 // 소켓 함수 오류 출력
-void err_display(char *msg)
+void err_display(const char* msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL, WSAGetLastError(),
-		(LPTSTR) &lpMsgBuf, 0, NULL
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&lpMsgBuf, 0, NULL
 	);
-	printf("[%s] %s\n", msg, (char *) lpMsgBuf);
+	printf("[%s] %s\n", msg, (char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	int retval;
 
@@ -51,10 +53,11 @@ int main(int argc, char *argv[])
 
 	// bind()
 	SOCKADDR_IN6 serveraddr;
+	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin6_family = AF_INET6;
 	serveraddr.sin6_addr = in6addr_any;
 	serveraddr.sin6_port = htons(SERVERPORT);
-	retval = bind(listen_sock, (SOCKADDR *) &serveraddr, sizeof(serveraddr));
+	retval = bind(listen_sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR)
 		err_quit("bind()");
 
@@ -62,7 +65,7 @@ int main(int argc, char *argv[])
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR)
 		err_quit("listen()");
-	
+
 	// 데이터 통신에 사용할 변수
 	SOCKET client_sock;
 	SOCKADDR_IN6 clientaddr;
@@ -72,8 +75,8 @@ int main(int argc, char *argv[])
 	while (1)
 	{
 		// accept()
-		addrlen = strlen(clientaddr);
-		client_sock = accept(client_sock, (SOCKADDR *) &clientaddr, &addrlen);
+		addrlen = sizeof(clientaddr);
+		client_sock = accept(listen_sock, (SOCKADDR*)&clientaddr, &addrlen);
 		if (client_sock == INVALID_SOCKET)
 		{
 			err_display("accept()");
@@ -83,14 +86,14 @@ int main(int argc, char *argv[])
 		// 접속한 클라이언트 정보 출력
 		char ipaddr[50];
 		DWORD ipaddrlen = sizeof(ipaddr);
-		WSAAddressToString((SOCKADDR *) &clientaddr, sizeof(clientaddr), NULL, ipaddr, &ipaddrlen);
+		WSAAddressToString((SOCKADDR*)&clientaddr, sizeof(clientaddr), NULL, ipaddr, &ipaddrlen);
 		printf("\n[TCP 서버] 클라이언트 접속: %s\n", ipaddr);
 
 		// 클라이언트와 데이터 통신
 		while (1)
 		{
 			// 데이터 받기
-			retval = recv(client_sock, buf, BUFSIZE);
+			retval = recv(client_sock, buf, BUFSIZE, 0);
 			if (retval == SOCKET_ERROR)
 			{
 				err_display("recv()");
