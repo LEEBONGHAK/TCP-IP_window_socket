@@ -97,14 +97,14 @@ int main(int argc, char* argv[])
 			break;
 
 		// '\n' 문자 제거
-		len = sizeof(len);
+		len = strlen(buf);
 		if (buf[len - 1] == '\n')
 			buf[len - 1] = '\0';
 		else if (len == 0)
 			break;
 
 		// 데이터 보내기
-		retval = send(sock, buf, sizeof(buf), 0);
+		retval = send(sock, buf, strlen(buf), 0);
 		if (retval == SOCKET_ERROR)
 		{
 			err_display("send()");
