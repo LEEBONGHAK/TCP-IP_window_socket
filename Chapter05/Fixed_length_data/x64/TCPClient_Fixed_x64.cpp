@@ -1,14 +1,15 @@
 #pragma comment(lib, "ws2_32")
 #include <winsock2.h>
+#include <WS2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #define SERVERIP "127.0.0.1"
 #define SERVERPORT 9000
-#define BUFSIZE 50 // 50 바이트 고정 길이 버퍼를 사용해 데이터를 보낸다.
+#define BUFSIZE 50
 
 // 소켓 함수 오류 출력 후 종료
-void err_quit(char *msg)
+void err_quit(const char *msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessage(
@@ -22,7 +23,7 @@ void err_quit(char *msg)
 }
 
 // 소켓 함수 오류 출력
-void err_display(char *msg)
+void err_display(const char *msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessage(
@@ -52,16 +53,16 @@ int main(int argc, char *argv[])
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
+	if (inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr) != 1)
+		err_quit("inet_pton()");
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR)
 		err_quit("connect()");
 
-	// 데이터 동신에 사용할 변수
-	char buf[BUFSIZE]; // BUFSIZE 크기인 퍼버 선언
-	char *testdata[] = {
-		// 전송할 문자열 데이터 선언
+	// 데이터 통신에 사용할 변수
+	char buf[BUFSIZE];
+	const char *testdata[] = {
 		"안녕하세요",
 		"반가워요",
 		"오늘따라 할 이야기가 많을 것 같네요",
@@ -71,12 +72,11 @@ int main(int argc, char *argv[])
 	// 서버와 데이터 통신
 	for (int i = 0; i < 4; i++)
 	{
-		// 데이터 입력(시뮬레이션)
-		memset(buf, "#", sizeof(buf));					// 고정 길이 데이터 전송 여부를 확인하기 위해 버퍼를 항상 '#'으로 채운다.(실전에서는 X)
-		strncpy(buf, testdata[i], strlen(testdata[i])); // 문자열 데이터를 버퍼에 복사
+		// 데이터 입력
+		memset(buf, '#', sizeof(buf));
+		strncpy_s(buf, sizeof(buf), testdata[i], strlen(testdata[i]));
 
 		// 데이터 보내기
-		// 문자열 길이에 상관없이 데이터를 항상 BUFSIZE(=50)만큼 보낸다.
 		retval = send(sock, buf, BUFSIZE, 0);
 		if (retval == SOCKET_ERROR)
 		{
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 			break;
 		}
 
-		printf("[TCP 클라이언트] %d바이트를 보냈습니다.\n", retval);
+		printf("[TCP 클라이언트] %d 바이트를 보냈습니다.\n", retval);
 	}
 
 	// closesocket()

@@ -1,10 +1,11 @@
 #pragma comment(lib, "ws2_32")
 #include <winsock2.h>
+#include <WS2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #define SERVERPORT 9000
-#define BUFSIZE 50 // 50 바이트 고정길이 버퍼를 사용해 데이터를 읽는다.
+#define BUFSIZE 50
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char *msg)
@@ -21,7 +22,7 @@ void err_quit(const char *msg)
 }
 
 // 소켓 함수 오류 출력
-void err_display(char *msg)
+void err_display(const char *msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessage(
@@ -31,28 +32,6 @@ void err_display(char *msg)
 		(LPTSTR)&lpMsgBuf, 0, NULL);
 	printf("[%s] %s\n", msg, (char *)lpMsgBuf);
 	LocalFree(lpMsgBuf);
-}
-
-// 사용자 정의 데이터 수신 함수
-int recvn(SOCKET s, char *buf, int len, int flags)
-{
-	int received;
-	char *ptr = buf;
-	int left = len;
-
-	while (left > 0)
-	{
-		received = recv(s, ptr, left, flags);
-		if (received == SOCKET_ERROR)
-			return SOCKET_ERROR;
-		else if (received == 0)
-			break;
-
-		left -= received;
-		ptr += received;
-	}
-
-	return (len - left);
 }
 
 int main(int argc, char *argv[])
@@ -80,7 +59,7 @@ int main(int argc, char *argv[])
 		err_quit("bind()");
 
 	// listen()
-	retval = listen(lisen_sock, SOMAXCONN);
+	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR)
 		err_quit("listen()");
 
@@ -88,28 +67,31 @@ int main(int argc, char *argv[])
 	SOCKET client_sock;
 	SOCKADDR_IN clientaddr;
 	int addrlen;
-	char buf[BUFSIZE + 1]; // 1바이트 null 문자를 고려해 버퍼 선언
+	char buf[BUFSIZE + 1];
+
+	// string address buf
+	char ipaddr[512];
 
 	while (1)
 	{
 		// accept()
 		addrlen = sizeof(clientaddr);
 		client_sock = accept(listen_sock, (SOCKADDR *)&clientaddr, &addrlen);
-		if (client_sock == SOCKET_ERROR)
+		if (client_sock == INVALID_SOCKET)
 		{
 			err_display("accept()");
 			break;
 		}
 
 		// 접속한 클라이언트 정보 출력
-		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+		inet_ntop(AF_INET, &clientaddr.sin_addr, ipaddr, sizeof(ipaddr));
+		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", ipaddr, ntohs(clientaddr.sin_port));
 
 		// 클라이언트와 데이터 통신
 		while (1)
 		{
 			// 데이터 받기
-			// recvn() 함수를 호출해 데이터를 항상 BUFSIZE(=50)만큼 읽는다.
-			retval = recvn(client_sock, buf, BUFSIZE, 0);
+			retval = recv(client_sock, buf, BUFSIZE, 0);
 			if (retval == SOCKET_ERROR)
 			{
 				err_display("recv()");
@@ -120,18 +102,18 @@ int main(int argc, char *argv[])
 
 			// 받은 데이터 출력
 			buf[retval] = '\0';
-			printf("[TCP/%s:%d] %s\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), buf);
+			printf("[TCP/%s:%d] %s\n", ipaddr, ntohs(clientaddr.sin_port), buf);
 		}
 
-		// clesesocket()
+		// closesocket()
 		closesocket(client_sock);
-		printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+		printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", ipaddr, ntohs(clientaddr.sin_port));
 	}
 
 	// closesocket()
 	closesocket(listen_sock);
 
-	// 윈속 종료
+	// 원속 종료
 	WSACleanup();
 	return 0;
 }
