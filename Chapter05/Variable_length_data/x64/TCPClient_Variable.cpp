@@ -1,5 +1,6 @@
 #pragma comment(lib, "ws2_32")
 #include <winsock2.h>
+#include <WS2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -52,7 +53,8 @@ int main(int argc, char **argv)
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
+	if (inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr) != 1)
+		err_quit("inet_pton()");
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR)
@@ -75,7 +77,7 @@ int main(int argc, char **argv)
 		// 데이터 입력(시뮬레이션)
 		// 문자열 데이터를 버퍼에 복사하고 맨 끝에 '\n'을 추가
 		len = strlen(testdata[i]);
-		strncpy(buf, testdata[i], len);
+		strncpy_s(buf, sizeof(buf), testdata[i], len);
 		buf[len++] = '\n';
 
 		// 데이터 보내기

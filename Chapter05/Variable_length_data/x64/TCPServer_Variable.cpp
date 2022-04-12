@@ -1,5 +1,6 @@
 #pragma comment(lib, "ws2_32")
 #include <winsock2.h>
+#include <WS2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -126,6 +127,9 @@ int main(int argc, char **argv)
 	int addrlen;
 	char buf[BUFSIZE + 1]; // null 문자를 감안
 
+	// ip address buf
+	char ipaddr[512];
+
 	while (1)
 	{
 		// accept()
@@ -137,8 +141,9 @@ int main(int argc, char **argv)
 			break;
 		}
 
+		inet_ntop(AF_INET, &clientaddr.sin_addr, ipaddr, sizeof(ipaddr));
 		// 접속한 클라이언트 정보 출력
-		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", ipaddr, ntohs(clientaddr.sin_port));
 
 		// 클라이언트와 데이터 통신
 		while (1)
@@ -156,12 +161,12 @@ int main(int argc, char **argv)
 
 			// 받은 데이터 출력
 			// 'buf[]' 배열에 있는 데이터 자체에 '\n\0'가 포함되어 있어 줄바꿈 없이 화면에 문자열로 출력하면 된다.
-			printf("[TCP/%s:%d] %s", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), buf);
+			printf("[TCP/%s:%d] %s", ipaddr, ntohs(clientaddr.sin_port), buf);
 		}
 
 		// closesocket()
 		closesocket(client_sock);
-		printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+		printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", ipaddr, ntohs(clientaddr.sin_port));
 	}
 
 	// closesocket()
