@@ -1,5 +1,6 @@
 #pragma comment(lib, "ws2_32")
 #include <winsock2.h>
+#include <WS2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -52,7 +53,8 @@ int main(int argc, char **argv)
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
+	if (inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr) != 1)
+		err_quit("inet_pton()");
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR)
@@ -74,7 +76,7 @@ int main(int argc, char **argv)
 	{
 		// 데이터 입력(시뮬레이션)
 		len = strlen(testdata[i]);
-		strncpy(buf, testdata[i], len); // 문자열 데이터를 버퍼에 복사
+		strncpy_s(buf, sizeof(buf), testdata[i], len); // 문자열 데이터를 버퍼에 복사
 
 		// 데이터 보내기(고정 길이)
 		// 문자열 길이는 32비트(int) 고정 길이로 보낸다.
