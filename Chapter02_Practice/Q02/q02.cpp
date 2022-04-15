@@ -1,12 +1,6 @@
 #pragma comment(lib, "ws2_32")
 #include <WinSock2.h>
 
-/*
-    Q02
-
-    두 번째 InitWinsock 예제를 수정하여 UDP 소켓을 생성하시오.
-*/
-
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char *msg)
 {

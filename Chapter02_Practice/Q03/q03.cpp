@@ -2,28 +2,21 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
-/*
-	Q03
-
-	두 번째 InitWinsock 예제를 수정하여 IPv6 프로토콜에 기반한 TCP 소켓을 생성하시오.
-*/
-
 // 소켓 함수 오류 출력 후 종료
-void err_quit(const char* msg)
+void err_quit(const char *msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL, WSAGetLastError(),
-		MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
-		(LPTSTR) &lpMsgBuf, 0, NULL
-	);
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&lpMsgBuf, 0, NULL);
 	MessageBox(NULL, (LPCTSTR)lpMsgBuf, msg, MB_ICONERROR);
 	LocalFree(lpMsgBuf);
 	exit(1);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	// 윈속 초기화
 	WSADATA wsa;
