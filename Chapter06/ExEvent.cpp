@@ -46,7 +46,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		// 읽은 데이터 출력
 		printf("Thread %4d: ", GetCurrentThreadId());
 		for (int i = 0; i < BUFSIZE; i++)
-			printf("%3d\n", buf[i]);
+			printf("%3d", buf[i]);
 		printf("\n");
 
 		// 버퍼 초기화
