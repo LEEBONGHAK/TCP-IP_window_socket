@@ -3,14 +3,14 @@
 #include <windows.h>
 #include <stdio.h>
 
-typedef struct Point3D
+struct Point3D
 {
 	int x, y, z;
-} Point3D;
+};
 
 DWORD WINAPI MyThread(LPVOID arg)
 {
-	Point3D *pt = (Point3D) arg;
+	Point3D *pt = (Point3D *) arg;
 	while (1)
 	{
 		printf("Running MyThread() %d: %d %d, %d\n", GetCurrentThreadID(), pt->x, pt->y, pt->z);
