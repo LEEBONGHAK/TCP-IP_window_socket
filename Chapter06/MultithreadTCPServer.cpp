@@ -67,7 +67,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// 데이터 보내기
 		retval = send(client_sock, buf, retval, 0);
-		if (retvla == SOCKET_ERROR)
+		if (retval == SOCKET_ERROR)
 		{
 			err_display("send()");
 			break;
