@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 {
 	int num = 100;
 
-	HANLE hThread = CreateThread(NULL, 0, MyThread, &num, CREATE_SUSPENDED, NULL);
+	HANLE hThread = CreateThread(NULL, 0, MyThread, (LPVOID)num, CREATE_SUSPENDED, NULL);
 	if (hThread == NULL)
 		return 1;
 
