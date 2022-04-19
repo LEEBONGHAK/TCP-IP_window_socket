@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-typedef Point3D
+typedef struct Point3D
 {
 	int x, y, z;
 } Point3D;
