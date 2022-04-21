@@ -3,7 +3,6 @@
 #include <WS2tcpip.h>
 #include <iostream>
 #include <stdlib.h>
-#include <malloc.h>
 
 #define SERVERPORT  11021
 #define BUFSIZE     512
