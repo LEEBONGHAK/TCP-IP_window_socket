@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 		len = strlen(buf);
 		if (buf[len - 1] == '\n')
 			buf[len - 1] = '\0';
-		if (len == 0)
+		if (strlen(buf) == 0)
 			break;
 
 		// 데이터 보내기
