@@ -68,8 +68,7 @@ int main(int argc, char** argv)
 		}
 
 		char ipaddr[50];
-		DWORD ipaddrlen = sizeof(ipaddr);
-		WSAAddressToString((SOCKADDR*)&peeraddr, sizeof(peeraddr), NULL, ipaddr, &ipaddrlen);
+		inet_ntop(AF_INET6, &peeraddr.sin6_addr, ipaddr, sizeof(ipaddr));
 
 		buf[retval] = '\0';
 		printf("[UDP/%s: %d] %s\n", ipaddr, ntohs(peeraddr.sin6_port), buf);
