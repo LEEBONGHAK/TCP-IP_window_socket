@@ -99,7 +99,7 @@ int main(int argc, char **argv)
 		}
 
 		// 송신자의 IP 주소 체크
-		if (memcmp(&peeraddr, &serveraddr, peeraddr)))
+		if (memcmp(&peeraddr, &serveraddr, sizeof(peeraddr)))
 		{
 			printf("[오류] 잘못된 데이터입니다!\n");
 			continue;
