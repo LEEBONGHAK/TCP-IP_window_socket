@@ -83,7 +83,10 @@ int main(int argc, char** argv)
 		addrlen = sizeof(peeraddr);
 		retval = recvfrom(sock, buf, BUFSIZE, 0, (SOCKADDR*)&peeraddr, &addrlen);
 		if (retval == SOCKET_ERROR)
+		{
 			err_display("recvfrom()");
+			continue;
+		}
 
 		if (memcmp(&peeraddr, &serveraddr, sizeof(peeraddr)))
 		{
