@@ -103,7 +103,7 @@ void set_buf(char *buf, int result)
 }
 
 // 계산하는 함수
-int make_result(char* data, WCHAR flag)
+void make_result(char* data, WCHAR flag, int &result)
 {
     int result = -1;
     int num[3] = { 0, };
@@ -118,13 +118,13 @@ int make_result(char* data, WCHAR flag)
         memcpy(&num[1], data, sizeof(int));
 
         if (opt[0] == (WCHAR)0)
-            result = num[0] + num[1];
+            *result = num[0] + num[1];
         else if (opt[0] == (WCHAR)1)
-            result = num[0] - num[1];
+            *result = num[0] - num[1];
         else if (opt[0] == (WCHAR)2)
-            result = num[0] * num[1];
+            *result = num[0] * num[1];
         else if (opt[0] == (WCHAR)3)
-            result = num[0] % num[1];
+            *result = num[0] % num[1];
     }
     else
     {
@@ -139,40 +139,38 @@ int make_result(char* data, WCHAR flag)
         memcpy(&num[2], data, sizeof(int));
 
         if (opt[0] == (WCHAR)0 && opt[1] == (WCHAR)0)
-            result = num[0] + num[1] + num[2];
+            *result = num[0] + num[1] + num[2];
         else if (opt[0] == (WCHAR)0 && opt[1] == (WCHAR)1)
-            result = num[0] + num[1] - num[2];
+            *result = num[0] + num[1] - num[2];
         else if (opt[0] == (WCHAR)0 && opt[1] == (WCHAR)2)
-            result = num[0] + num[1] * num[2];
+            *result = num[0] + num[1] * num[2];
         else if (opt[0] == (WCHAR)0 && opt[1] == (WCHAR)3)
-            result = num[0] + num[1] % num[2];
+            *result = num[0] + num[1] % num[2];
         else if (opt[0] == (WCHAR)1 && opt[1] == (WCHAR)0)
-            result = num[0] - num[1] + num[2];
+            *result = num[0] - num[1] + num[2];
         else if (opt[0] == (WCHAR)1 && opt[1] == (WCHAR)1)
-            result = num[0] - num[1] - num[2];
+            *result = num[0] - num[1] - num[2];
         else if (opt[0] == (WCHAR)1 && opt[1] == (WCHAR)2)
-            result = num[0] - num[1] * num[2];
+            *result = num[0] - num[1] * num[2];
         else if (opt[0] == (WCHAR)1 && opt[1] == (WCHAR)3)
-            result = num[0] - num[1] % num[2];
+            *result = num[0] - num[1] % num[2];
         else if (opt[0] == (WCHAR)2 && opt[1] == (WCHAR)0)
-            result = num[0] * num[1] + num[2];
+            *result = num[0] * num[1] + num[2];
         else if (opt[0] == (WCHAR)2 && opt[1] == (WCHAR)1)
-            result = num[0] * num[1] - num[2];
+            *result = num[0] * num[1] - num[2];
         else if (opt[0] == (WCHAR)2 && opt[1] == (WCHAR)2)
-            result = num[0] * num[1] * num[2];
+            *result = num[0] * num[1] * num[2];
         else if (opt[0] == (WCHAR)2 && opt[1] == (WCHAR)3)
-            result = num[0] * num[1] % num[2];
+            *result = num[0] * num[1] % num[2];
         else if (opt[0] == (WCHAR)3 && opt[1] == (WCHAR)0)
-            result = num[0] % num[1] + num[2];
+            *result = num[0] % num[1] + num[2];
         else if (opt[0] == (WCHAR)3 && opt[1] == (WCHAR)1)
-            result = num[0] % num[1] - num[2];
+            *result = num[0] % num[1] - num[2];
         else if (opt[0] == (WCHAR)3 && opt[1] == (WCHAR)2)
-            result = num[0] % num[1] * num[2];
+            *result = num[0] % num[1] * num[2];
         else if (opt[0] == (WCHAR)3 && opt[1] == (WCHAR)3)
-            result = num[0] % num[1] % num[2];
+            *result = num[0] % num[1] % num[2];
     }
-    
-    return result;
 }
 
 int main()
@@ -248,19 +246,13 @@ int main()
                 continue;
 
             if (packet_received->PacketID == (WCHAR)21 || packet_received->PacketID == (WCHAR)22)
-                result = make_result(packet_received->BodyData, packet_received->PacketID);
+                make_result(packet_received->BodyData, packet_received->PacketID, &result);
             else
             {
                 free_packet(packet_received);
                 continue;
             }
-
-            if (result == -1)
-            {
-                free_packet(packet_received);
-                continue;
-            }
-
+            
             ZeroMemory(buf, BUFSIZE);
             set_buf(buf, result);
 
