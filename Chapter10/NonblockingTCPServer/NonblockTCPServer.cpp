@@ -6,7 +6,7 @@
 #define SERVERPORT	9000
 #define BUFSIZE		512
 
-// 오류 출력 후 종료
+// 소켓 함수 오류 출력 후 종료
 void err_quit(const char *msg)
 {
 	LPVOID lpMsgBuf;
@@ -21,7 +21,7 @@ void err_quit(const char *msg)
 	exit(1);
 }
 
-// 오류 출력
+// 소켓 함수 오류 출력
 void err_display(const char *msg)
 {
 	LPVOID lpMsgBuf;
