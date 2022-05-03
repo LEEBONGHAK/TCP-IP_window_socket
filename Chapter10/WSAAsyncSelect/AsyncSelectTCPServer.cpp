@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	int retval;
 
 	// 윈도우 클래스 등록
-	WNDCLASS wndclas;
+	WNDCLASS wndclass;
 	wndclass.style = CS_HREDRAW | CS_VREDRAW;
 	wndclass.lpfnWndProc = WndProc;
 	wndclass.cbClsExtra = 0;
