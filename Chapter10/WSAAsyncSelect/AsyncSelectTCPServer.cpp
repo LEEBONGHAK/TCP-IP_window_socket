@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 {
 	int retval;
 
-	// 윈도우 클랙스 등록
+	// 윈도우 클래스 등록
 	WNDCLASS wndclas;
 	wndclass.style = CS_HREDRAW | CS_VREDRAW;
 	wndclass.lpfnWndProc = WndProc;
