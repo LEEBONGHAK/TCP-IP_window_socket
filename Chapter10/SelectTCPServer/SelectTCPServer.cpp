@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 				}
 				ptr->recvbytes = retval;
 
-				// 받은 데이터 툴력
+				// 받은 데이터 출력
 				addrlen = sizeof(clientaddr);
 				getpeername(ptr->sock, (SOCKADDR *) &clientaddr, &addrlen);
 				ptr->buf[retval] = '\0';
