@@ -92,9 +92,13 @@ int main(int argc, char **argv)
 	
 	// 메세지 루프
 	MSG msg;
+	// GetMessage()는 메세지 큐에 메세지가 존재한다면 가져와서 MSG 구조체에 그 값을 저장하고 TRUE를 반환한다. 그런데 만약 읽은 메세지가 WM_QUIT이면 FALSE를 리턴한다.
 	while (GetMessage(&msg, 0, 0) > 0)
 	{
+		// TranslateMessage()은 GetMessage()으로부터 전달받은 메시지가 WM_KEYDOWN 인지, 눌려진 키가 문자키인지 검사해보고 조건이 맞을 경우 WM_CHAR 메시지를 만들어 message queue에 덧붙이는 역할을 한다. 문자 입력이 아닐 경우는 아무 일도 하지 않는다.
+		// 키보드 드라이버에 의해 ASCII 문자로 매핑된 키에 대해서만 WM_CHAR 메시지를 생성한다.
 		TranslateMessage(&msg);
+		// message queue에 덧붙여진 메시지는 DispatchMessage()에 의해 WndProc()으로 전달된다.
 		DispatchMessage(&msg);
 	}
 
