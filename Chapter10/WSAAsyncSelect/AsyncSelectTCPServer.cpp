@@ -203,7 +203,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				PostMessage(hWnd, WM_SOCKET, wParam, FD_READ);
 			}
 		}
-		break;
+		// break
 	case FD_CLOSE:
 		RemoveSocketInfo(wParam);
 		break ;
