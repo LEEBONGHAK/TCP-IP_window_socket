@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 	SOCKADDR_IN clientaddr;
 	int i, addrlen;
 
-	whiel (1)
+	while (1)
 	{
 		// 이벤트 객체 관찰하기
 		i = WSAWaitForMultipleEvents(nTotalSockets, EventArray, FALSE, WSA_INFINITE, FALSE);
